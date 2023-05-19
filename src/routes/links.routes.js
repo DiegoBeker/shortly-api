@@ -7,6 +7,6 @@ import { validateToken } from "../middlewares/validateToken.middleware.js";
 const linksRouter = Router();
 
 linksRouter.post("/urls/shorten", validateSchema(urlSchema), validateToken, shortenUrl);
-linksRouter.get("/urls/:id", validateToken, getShortUrlById);
+linksRouter.get("/urls/:id", getShortUrlById);
 
 export default linksRouter;
