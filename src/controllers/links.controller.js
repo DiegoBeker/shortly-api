@@ -46,8 +46,19 @@ export async function openShortUrl(req, res) {
         `, [shortUrl]);
 
         const { url } = link.rows[0];
-        
-        res.redirect(200,url);
+
+        res.redirect(200, url);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
+export async function deleteShortUrl(req, res){
+    const { id } = req.params;
+
+    try {
+        await db.query(`DELETE FROM links WHERE id=$1`, [id]);
+        res.sendStatus(204);
     } catch (error) {
         res.status(500).send(error.message);
     }
