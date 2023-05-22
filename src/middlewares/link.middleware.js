@@ -13,6 +13,6 @@ export async function validateOwnership(req, res, next) {
 
         next();
     } catch (error) {
-        
+        res.status(500).send(error.message);
     }
 }

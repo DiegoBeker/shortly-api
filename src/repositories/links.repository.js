@@ -14,8 +14,6 @@ export async function insertShortenUrl(url, shortUrl, userId) {
 export async function getLinkById(id) {
     const link = await db.query(`SELECT id, "shortUrl", url FROM links WHERE id=$1`, [id]);
 
-    if (!link.rows[0]) return res.status(404).send("Url not found");
-
     return link.rows[0];
 }
 
