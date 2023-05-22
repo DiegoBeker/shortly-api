@@ -36,3 +36,9 @@ export async function getUrlToOpen(shortUrl) {
 export async function deleteLink(id){
     await db.query(`DELETE FROM links WHERE id=$1`, [id]);
 }
+
+export async function getLinkByIdWithUser(id){
+    const link = await db.query(`SELECT * FROM links WHERE id=$1`, [id]);
+
+    return link.rows[0];
+}

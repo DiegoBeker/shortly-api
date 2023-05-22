@@ -1,5 +1,5 @@
-import { db } from "../database/database.connection.js";
 import bcrypt from "bcrypt";
+import { getUserByEmail } from "../repositories/users.repository.js";
 
 export async function validateSignUp(req, res, next) {
     const { email, password, confirmPassword } = req.body;
@@ -7,8 +7,8 @@ export async function validateSignUp(req, res, next) {
     try {
         if (password !== confirmPassword) return res.status(422).send({ message: "Passwords do not match" });
 
-        const emailExists = await db.query(`SELECT * FROM users WHERE email=$1`, [email]);
-        if (emailExists.rows[0]) return res.status(409).send({ message: "Email already registered" });
+        const emailExists = await getUserByEmail(email);
+        if (emailExists) return res.status(409).send({ message: "Email already registered" });
 
         next();
     } catch (error) {
@@ -20,13 +20,13 @@ export async function validateLogin(req, res, next) {
     const { email, password } = req.body;
 
     try {
-        const userExists = await db.query(`SELECT * FROM users WHERE email=$1`, [email]);
-        if (!userExists.rows[0]) return res.status(401).send({ message: "Email/password is incorrect" });
+        const userExists = await getUserByEmail(email);
+        if (!userExists) return res.status(401).send({ message: "Email/password is incorrect" });
 
-        const passwordisCorrect = bcrypt.compareSync(password, userExists.rows[0].password);
+        const passwordisCorrect = bcrypt.compareSync(password, userExists.password);
         if(!passwordisCorrect) return res.status(401).send({ message: "Email/password is incorrect" });
 
-        res.locals.id = userExists.rows[0].id;
+        res.locals.id = userExists.id;
 
         next();
     } catch (error) {
