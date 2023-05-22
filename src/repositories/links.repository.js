@@ -17,12 +17,11 @@ export async function getLinkById(id) {
     return link.rows[0];
 }
 
-export async function getUrlToOpen(req, res) {
-    const { shortUrl } = req.params;
-
+export async function getUrlToOpen(shortUrl) {
+    
     const link = await db.query(`SELECT * FROM links WHERE "shortUrl"=$1`, [shortUrl]);
 
-    if (!link.rows[0]) return res.status(404).send("Short url not found");
+    if (!link.rows[0]) return undefined;
 
     await db.query(`
             UPDATE links
